@@ -6,8 +6,14 @@ import { useNavigate } from "react-router-dom";
 import Imag from "../assets/login_bg.jpg";
 import Register from "./RegisterAuth";
 import ForgotPassword from "./ForgotpasswordAuth";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../redux/Store.ts";
+import {login} from "../redux/slices/AuthSlice.ts";
 
 const Login: React.FC = () => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector((state: RootState) => state.auth);
     const [form, setForm] = useState<boolean>(false);
     const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
     const [formValidator, setFormValidator] = useState({
@@ -46,13 +52,17 @@ const Login: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
+
         const newErrors = {
             email: validateField("email", formValidator.email),
+            password: validateField("password", formValidator.password),
         };
         setErrors(newErrors);
 
-        if (!newErrors.email ) {
-            console.log("Logged in successfully!");
+        const hasErrors = Object.values(newErrors).some((error) => error);
+        if (!hasErrors) {
+            dispatch(login({ email: formValidator.email, password: formValidator.password }));
+            navigate('/home')
         }
     };
 
@@ -113,20 +123,27 @@ const Login: React.FC = () => {
                                     {errors.password && <span className="text-red-500">{errors.password}</span>}
                                     <div className="flex gap-3">
                                         <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="rememberMe" />
+                                            <input type="checkbox" name="rememberMe"/>
                                             <span>Remember me for 30 days</span>
                                         </label>
                                     </div>
                                     <button
                                         onClick={handleSubmit}
-                                        className="bg-[#476ACD] p-2 text-white rounded-lg"
+                                        className={`bg-[#476ACD] p-2 text-white rounded-lg flex justify-center items-center`}
+                                        disabled={loading}
                                     >
-                                        Log In
+                                        {loading ? (
+                                            <div
+                                                className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></div>
+                                        ) : (
+                                            "Log In"
+                                        )}
                                     </button>
+
                                     <div className="flex items-center">
-                                        <div className="bg-gray-300 w-20 sm:w-52 h-[1px]" />
+                                        <div className="bg-gray-300 w-20 sm:w-52 h-[1px]"/>
                                         <span className="m-1.5 text-sm text-gray-400">OR</span>
-                                        <div className="bg-gray-300 w-20 sm:w-52 h-[1px]" />
+                                        <div className="bg-gray-300 w-20 sm:w-52 h-[1px]"/>
                                     </div>
                                     <button className="bg-[#EFF2FB] w-full p-2 rounded-lg text-[#476ACD]">
                                         Sign In with Google
