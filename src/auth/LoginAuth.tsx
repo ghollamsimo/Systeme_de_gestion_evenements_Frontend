@@ -8,7 +8,6 @@ import Register from "./RegisterAuth";
 import ForgotPassword from "./ForgotpasswordAuth";
 
 const Login: React.FC = () => {
-    const navigate = useNavigate();
     const [form, setForm] = useState<boolean>(false);
     const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
     const [formValidator, setFormValidator] = useState({
