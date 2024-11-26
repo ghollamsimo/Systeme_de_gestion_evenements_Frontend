@@ -650,6 +650,10 @@ video {
   height: 1px;
 }
 
+.h-\[20rem\] {
+  height: 20rem;
+}
+
 .h-auto {
   height: auto;
 }
@@ -665,10 +669,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-\[20rem\] {
-  height: 20rem;
 }
 
 .w-20 {
