@@ -55,11 +55,11 @@ const authSlice = createSlice({
                 state.dataObj = action.payload;
                 state.errorMessage = null;
             })
-            .addCase(register.rejected, (state, action: PayloadAction<string | undefined>) => {
+            .addCase(register.rejected, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.errorMessage = action.payload || "Registration failed";
+                state.errorMessage = action.payload?.message || "Registration failed";
             })
-            .addCase(login.pending, (state) => {
+    .addCase(login.pending, (state) => {
                 state.loading = true;
             })
             .addCase(login.fulfilled, (state, action: PayloadAction<any>) => {

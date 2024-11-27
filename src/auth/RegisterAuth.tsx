@@ -1,24 +1,32 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { register } from "../redux/slices/AuthSlice.ts";
 
 const Register: React.FC = () => {
+    const dispatch = useDispatch();
+    const { errorMessage } = useSelector((state: RootState) => state.auth);
     const [formValidator, setFormValidator] = useState({
         name: '',
         email: '',
         password: '',
+        role: 'participant'
     });
     const [errors, setErrors] = useState({
         name: '',
         email: '',
         password: '',
+        role: ''
     });
 
     const validateField = (name: string, value: string): string => {
         switch (name) {
             case "name":
                 return value.trim() ? "" : "Name is required.";
-            case "email":
+            case "email": {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return emailRegex.test(value) ? "" : "Invalid email format.";
+            }
             case "password":
                 return value.length >= 6 ? "" : "Password must be at least 6 characters.";
             default:
@@ -38,17 +46,24 @@ const Register: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e): void => {
+    const handleSubmit = async (e): Promise<void> => {
         e.preventDefault();
         const newErrors = {
             name: validateField("name", formValidator.name),
             email: validateField("email", formValidator.email),
             password: validateField("password", formValidator.password),
+            role: ""
         };
         setErrors(newErrors);
+        const hasError = Object.values(newErrors).some((error) => error);
 
-        if (!Object.values(newErrors).some((error) => error)) {
-            console.log("Form submitted");
+        if (!hasError) {
+            await dispatch(register({
+                name: formValidator.name,
+                email: formValidator.email,
+                password: formValidator.password,
+                role: formValidator.role
+            }));
         }
     };
 
@@ -75,6 +90,7 @@ const Register: React.FC = () => {
                     placeholder="example@gmail.com"
                 />
                 {errors.email && <span className="text-red-500">{errors.email}</span>}
+                {errorMessage && <span className="text-red-500">{errorMessage}</span>}
 
                 <input
                     name="password"
@@ -85,20 +101,6 @@ const Register: React.FC = () => {
                     placeholder="Password"
                 />
                 {errors.password && <span className="text-red-500">{errors.password}</span>}
-
-                <div className="flex gap-3">
-                    <label className="label">
-                        <div className="toggle text-white bg-[#476ACD]">
-                            <input
-                                className="toggle-state text-white"
-                                type="checkbox"
-                                name="remember"
-                            />
-                            <div className="indicator"/>
-                        </div>
-                    </label>
-                    <span className="flex justify-center items-center">Remember me for 30 days</span>
-                </div>
 
                 <button type="submit" className="bg-[#476ACD] p-2 text-white rounded-lg">Register</button>
             </form>
