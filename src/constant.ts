@@ -17,3 +17,10 @@ export interface LoginField{
     email: string;
     password: string;
 }
+
+export interface EventFields{
+    title: string
+    image: string
+    description: string
+    organiser: string
+}
