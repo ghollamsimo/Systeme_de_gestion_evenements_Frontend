@@ -14,9 +14,29 @@ export const stats = createAsyncThunk(
     }
 )
 
+export const store = createAsyncThunk(
+    "event/store",
+    async ({ title, image, description, participants, organiser }: {
+        title: string;
+        image: string;
+        description: string;
+        participants: string[];
+        organiser: string;
+    }, { rejectWithValue }) => {
+        try {
+            const data = { title, image, description, participants, organiser };
+            const res = await EventService.store(data);
+            console.log('dddd', res.data);
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
 
 const eventSlice = createSlice({
-    name: 'auth',
+    name: 'event',
     initialState,
     reducers: {
         changeStateTrue: (state) => {
@@ -41,9 +61,20 @@ const eventSlice = createSlice({
             })
             .addCase(stats.rejected, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.errorMessage = action.payload?.message || "Registration failed";
+                state.errorMessage = action.payload?.message || "failed";
             })
-
+            .addCase(store.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(store.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(store.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "login failed";
+            })
     }
 })
 
