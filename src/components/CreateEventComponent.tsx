@@ -1,20 +1,26 @@
 import React, { useState } from "react";
+import {useDispatch} from "react-redux";
+import {store} from "../redux/slices/EventSlice.ts";
 
-interface CreateEventProps {
-    setIsOpen: (isOpen: boolean) => void;
-}
 
-export const CreateEvent: React.FC<CreateEventProps> = ({ setIsOpen }) => {
+export const CreateEvent: React.FC = ({ setIsOpen }) => {
+    const dispatch = useDispatch();
+    const token = localStorage.getItem('token');
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState<File | null>(null);
     const [participants, setParticipants] = useState<string[]>([]);
-
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(image)
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0]);
+            const file = e.target.files[0];
+            const imageName = `${Date.now()}_${file.name}`;
+            setImage(imageName);
         }
     };
+
+
 
     const handleParticipantChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
@@ -22,7 +28,14 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ setIsOpen }) => {
     };
 
     const handleSubmit = () => {
-        console.log({ title, description, image, participants });
+        const data = {
+            title: title,
+            image: image,
+            description: description,
+            participants: [participants],
+            organiser: token
+        }
+        dispatch(store(data))
         setIsOpen(false);
     };
 
@@ -60,9 +73,7 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ setIsOpen }) => {
                             </div>
 
                             <div className="p-6">
-                                {/* Form */}
                                 <form className="space-y-4">
-                                    {/* Title Input */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Event Title</label>
                                         <input
@@ -73,7 +84,6 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ setIsOpen }) => {
                                         />
                                     </div>
 
-                                    {/* Description Input */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Description</label>
                                         <textarea
@@ -84,7 +94,6 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ setIsOpen }) => {
                                         ></textarea>
                                     </div>
 
-                                    {/* Image Upload */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Event Image</label>
                                         <input
