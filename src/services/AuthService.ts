@@ -15,6 +15,10 @@ class AuthService {
     login(data: LoginField): Promise<{token: string}>{
         return this.http.post('/auth/login', data)
     }
+
+    show(id: string){
+        return this.http.get(`/auth/show/${id}`)
+    }
 }
 
 export default new AuthService()
