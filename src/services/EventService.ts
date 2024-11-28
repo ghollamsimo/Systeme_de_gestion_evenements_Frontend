@@ -15,6 +15,10 @@ class EventService {
     store(data: EventFields): Promise<EventFields>{
         return this.http.post('event/store', data)
     }
+
+    index(){
+        return this.http.get('/event/index')
+    }
 }
 
 export default new EventService()

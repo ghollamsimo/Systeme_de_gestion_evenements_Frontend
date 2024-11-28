@@ -6,21 +6,22 @@ import {UsersTable} from "../tables/UsersTabel.tsx";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/Store.ts";
-import {stats} from "../redux/slices/EventSlice.ts";
+import {index, stats} from "../redux/slices/EventSlice.ts";
 
 export const DashboardPage: React.FC = () => {
     const dispatch = useDispatch();
     const stat = useSelector((state: RootState) => state.event.dataObj);
-
+    const events = useSelector((state: RootState) => state.event.dataObj)
     useEffect(() =>{
         dispatch(stats())
+        dispatch(index())
     }, [dispatch])
     return (
         <div className="min-h-screen">
             <main className="flex-1">
              <NavbarDashboard/>
                 <div className="p-6">
-                    <EventTable/>
+                    <EventTable events={events}/>
                     <UsersTable/>
                 </div>
             </main>

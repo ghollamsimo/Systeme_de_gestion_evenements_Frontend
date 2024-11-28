@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import {useDispatch} from "react-redux";
-import {store} from "../redux/slices/EventSlice.ts";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {index, stats, store} from "../redux/slices/EventSlice.ts";
+import {RootState} from "../redux/Store.ts";
 
 
 export const CreateEvent: React.FC = ({ setIsOpen }) => {
@@ -11,7 +12,8 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState<File | null>(null);
     const [participants, setParticipants] = useState<string[]>([]);
-    console.log(image)
+    const users = useSelector((state: RootState) => state.event.dataObj[0]?.participants)
+
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
@@ -38,7 +40,9 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
         dispatch(store(data))
         setIsOpen(false);
     };
-
+    useEffect(() =>{
+        dispatch(index())
+    }, [dispatch])
     return (
         <>
             <div className="fixed inset-0 z-50">
@@ -112,10 +116,11 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
                                             className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500"
                                             onChange={handleParticipantChange}
                                         >
-                                            <option value="John Doe">John Doe</option>
-                                            <option value="Jane Smith">Jane Smith</option>
-                                            <option value="Alice Johnson">Alice Johnson</option>
-                                            <option value="Michael Brown">Michael Brown</option>
+                                            {users.map((user: any, idx: number) => (
+                                                <option key={idx} value={user._id}>
+                                                    {user.name} ({user.email})
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
 
