@@ -20,7 +20,6 @@ export const DashboardPage: React.FC = () => {
             <main className="flex-1">
              <NavbarDashboard/>
                 <div className="p-6">
-                    <Stats stats={stat}/>
                     <EventTable/>
                     <UsersTable/>
                 </div>
