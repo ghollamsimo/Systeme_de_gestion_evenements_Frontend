@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {jwtDecode} from "jwt-decode";
 import {useDispatch} from "react-redux";
 import {show} from "./redux/slices/AuthSlice.ts";
+import {DashboardPage} from "./pages/DashboardPage.tsx";
 
 function App() {
     const [user_id, setUser_id] = useState<string | null>(null);
@@ -71,7 +72,14 @@ function App() {
                 <ProtectedRoute role="participant">
                     <HomePage />
                 </ProtectedRoute>
-            } />        </Routes>
+            } />
+
+            <Route path="/dashboard" element={
+                <ProtectedRoute role='organiser'>
+                    <DashboardPage/>
+                </ProtectedRoute>
+            }/>
+        </Routes>
     </>
   )
 }
