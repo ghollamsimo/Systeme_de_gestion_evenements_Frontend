@@ -17,18 +17,21 @@ export const EventTable: React.FC = ({events}) => {
               </div>
               <table className="w-full text-left">
               <thead>
-                  <tr>
-                      <th className="p-3 border-b font-medium text-gray-600">Event Name</th>
-                      <th className="p-3 border-b font-medium text-gray-600">Event</th>
-                      <th className="p-3 border-b font-medium text-gray-600">Action</th>
-                  </tr>
-                  </thead>
+              <tr>
+                  <th className="p-3 border-b font-medium text-gray-600">Event Name</th>
+                  <th className="p-3 border-b font-medium text-gray-600">Event Image</th>
+                  <th className="p-3 border-b font-medium text-gray-600">Event</th>
+                  <th className="p-3 border-b font-medium text-gray-600">Action</th>
+              </tr>
+              </thead>
                   <tbody>
                   {events && events.length > 0 ? (
-                      events.map((product, index) => (
+                      events.map((event, index) => (
                           <tr key={index}>
-                              <td className="p-3 border-b">{product.title || "N/A"}</td>
-                              <td className="p-3 border-b">{product.description || "N/A"}</td>
+                              <td className="p-3 border-b">{event.title || "N/A"}</td>
+                              <td className="p-3 border-b"><img src={`http://localhost:8080/${event?.image}`} className='h-14' alt={event.title}/></td>
+
+                              <td className="p-3 border-b">{event.description || "N/A"}</td>
                               <td className="p-3 border-b flex space-x-2">
                                   <button className="bg-purple-600 text-white px-3 py-1 rounded-lg">Edit</button>
                                   <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg">Delete</button>
@@ -38,7 +41,7 @@ export const EventTable: React.FC = ({events}) => {
                       ))
                   ) : (
                       <tr>
-                          <td colSpan={5} className="text-center p-3">No events available</td>
+                      <td colSpan={5} className="text-center p-3">No events available</td>
                       </tr>
                   )}
                   </tbody>

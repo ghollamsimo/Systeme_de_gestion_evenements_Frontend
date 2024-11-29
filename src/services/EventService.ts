@@ -8,13 +8,17 @@ class EventService {
         this.http = Api();
     }
 
+    store(data: FormData): Promise<any> {
+        return this.http.post('event/store', data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
     stats(){
         return this.http.get(`/event/stats`)
     }
 
-    store(data: EventFields): Promise<EventFields>{
-        return this.http.post('event/store', data)
-    }
+
 
     index(){
         return this.http.get('/event/index')

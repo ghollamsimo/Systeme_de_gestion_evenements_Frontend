@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import EventService from "../../services/EventService.ts";
 import {initialState} from "../initialisation.ts";
+import {EventFields} from "../../constant.ts";
 
 export const stats = createAsyncThunk(
     "event/stats",
@@ -28,25 +29,16 @@ export const index = createAsyncThunk(
 
 export const store = createAsyncThunk(
     "event/store",
-    async ({ title, image, description, participants, organiser }: {
-        title: string;
-        image: string;
-        description: string;
-        participants: string[];
-        organiser: string;
-    }, { rejectWithValue }) => {
+    async (data: FormData, { rejectWithValue }) => {
         try {
-            const data = { title, image, description, participants, organiser };
             const res = await EventService.store(data);
-            console.log('dddd', res.data);
+            console.log('Event created:', res.data);
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
         }
     }
 );
-
-
 const eventSlice = createSlice({
     name: 'event',
     initialState,
