@@ -22,5 +22,6 @@ export interface EventFields{
     title: string
     image: string
     description: string
+    participants: string[]
     organiser: string
 }
