@@ -19,6 +19,10 @@ class AuthService {
     show(id: string){
         return this.http.get(`/auth/show/${id}`)
     }
+
+    index(){
+        return this.http.get('/organiser/index')
+    }
 }
 
 export default new AuthService()
