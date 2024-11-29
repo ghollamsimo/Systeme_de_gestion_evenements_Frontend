@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../redux/slices/EventSlice";
-import { RootState } from "../redux/Store";
 import { jwtDecode } from "jwt-decode";
-
+import {index} from '../redux/slices/AuthSlice.ts'
 export const CreateEvent: React.FC = ({ setIsOpen }) => {
     const dispatch = useDispatch();
     const token = localStorage.getItem("token");
@@ -12,9 +11,9 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState<File | null>(null);
     const [participants, setParticipants] = useState<string[]>([]);
+    console.log('sssqss', participants)
 
-
-    const users = useSelector((state: RootState) => state.event.dataObj);
+    const users = useSelector((state) => state.auth.datalist);
     console.log('eee', users)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -46,7 +45,7 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
             formData.append("title", title);
             formData.append("description", description);
             formData.append("image", image);
-            formData.append("participants", participants);
+            participants.forEach((participant) => formData.append("participants[]", participant));
             formData.append("organiser", organiserId);
 
             setLoading(true);
@@ -57,7 +56,7 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
 
 
     useEffect(() => {
-
+        dispatch(index())
     }, [dispatch]);
 
     return (
@@ -123,7 +122,7 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
                                         {users ? (
                                             users.map((user: any, idx: number) => (
                                                 <option key={idx} value={user._id}>
-                                                    {user.name} ({user.email})
+                                                    {user.name}
                                                 </option>
                                             ))
                                         ) : (
