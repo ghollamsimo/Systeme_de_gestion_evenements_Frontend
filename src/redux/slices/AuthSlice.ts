@@ -42,6 +42,19 @@ export const show = createAsyncThunk(
     }
 )
 
+export const index = createAsyncThunk(
+    "auth/index",
+    async (_ , {rejectWithValue}) => {
+        try {
+            const res = await AuthService.index()
+            return res.data
+        }catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+)
+
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -95,6 +108,18 @@ const authSlice = createSlice({
             .addCase(show.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.errorMessage = action.payload || "Login failed";
+            })
+            .addCase(index.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(index.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.datalist = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(index.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "index failed";
             })
     }
 })
