@@ -18,6 +18,12 @@ class EventService {
         });
     }
 
+    update(id: string, data: FormData){
+        return this.http.patch(`event/update/${id}`, data , {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+    }
+
     stats(){
         return this.http.get(`/event/stats`)
     }
