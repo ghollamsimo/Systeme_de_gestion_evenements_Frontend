@@ -26,6 +26,18 @@ export const index = createAsyncThunk(
     }
 )
 
+export const show = createAsyncThunk(
+    "event/show",
+    async (id: string , {rejectWithValue}) => {
+        try {
+            const res = await EventService.show(id)
+            return res.data
+        }catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+)
+
 export const store = createAsyncThunk(
     "event/store",
     async (data: FormData, { rejectWithValue }) => {
@@ -108,7 +120,7 @@ const eventSlice = createSlice({
             })
             .addCase(index.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.dataObj = action.payload;
+                state.datalist = action.payload;
                 state.errorMessage = null;
             })
             .addCase(index.rejected, (state, action: PayloadAction<string | undefined>) => {
@@ -138,6 +150,18 @@ const eventSlice = createSlice({
             .addCase(update.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.errorMessage = action.payload || "update failed";
+            })
+            .addCase(show.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(show.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(show.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "show failed";
             })
     }
 })
