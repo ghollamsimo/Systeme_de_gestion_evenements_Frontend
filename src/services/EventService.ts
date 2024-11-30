@@ -8,6 +8,10 @@ class EventService {
         this.http = Api();
     }
 
+    show(id: string){
+        return this.http.get(`/event/show/${id}`)
+    }
+
     delete(id: string){
         return this.http.delete(`/event/delete/${id}`)
     }
