@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import EventService from "../../services/EventService.ts";
 import {initialState} from "../initialisation.ts";
-import {EventFields} from "../../constant.ts";
 
 export const stats = createAsyncThunk(
     "event/stats",
@@ -32,13 +31,25 @@ export const store = createAsyncThunk(
     async (data: FormData, { rejectWithValue }) => {
         try {
             const res = await EventService.store(data);
-            console.log('Event created:', res.data);
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
         }
     }
 );
+
+export const deleteEvent = createAsyncThunk(
+    "event/delete",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const res = await EventService.delete(id);
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
 const eventSlice = createSlice({
     name: 'event',
     initialState,
@@ -90,6 +101,18 @@ const eventSlice = createSlice({
             .addCase(index.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.errorMessage = action.payload || "login failed";
+            })
+            .addCase(deleteEvent.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteEvent.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(deleteEvent.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "delete failed";
             })
     }
 })
