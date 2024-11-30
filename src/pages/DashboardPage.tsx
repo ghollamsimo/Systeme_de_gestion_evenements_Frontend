@@ -11,7 +11,7 @@ import {index, stats} from "../redux/slices/EventSlice.ts";
 export const DashboardPage: React.FC = () => {
     const dispatch = useDispatch();
     const stat = useSelector((state: RootState) => state.event.dataObj);
-    const events = useSelector((state: RootState) => state.event.dataObj)
+    const events = useSelector((state: RootState) => state.event.datalist)
     useEffect(() =>{
         dispatch(stats())
         dispatch(index())
