@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import EventService from "../../services/EventService.ts";
 import {initialState} from "../initialisation.ts";
-import {EventFields} from "../../constant.ts";
 
 export const stats = createAsyncThunk(
     "event/stats",
@@ -27,18 +26,55 @@ export const index = createAsyncThunk(
     }
 )
 
+export const show = createAsyncThunk(
+    "event/show",
+    async (id: string , {rejectWithValue}) => {
+        try {
+            const res = await EventService.show(id)
+            return res.data
+        }catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+)
+
 export const store = createAsyncThunk(
     "event/store",
     async (data: FormData, { rejectWithValue }) => {
         try {
             const res = await EventService.store(data);
-            console.log('Event created:', res.data);
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
         }
     }
 );
+
+export const deleteEvent = createAsyncThunk(
+    "event/delete",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const res = await EventService.delete(id);
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
+export const update = createAsyncThunk(
+    "event/update",
+    async ({ id, data }: { id: string; data: FormData }, { rejectWithValue }) => {
+        try {
+            const res = await EventService.update(id, data);
+            return res.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
+
 const eventSlice = createSlice({
     name: 'event',
     initialState,
@@ -84,12 +120,48 @@ const eventSlice = createSlice({
             })
             .addCase(index.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.dataObj = action.payload;
+                state.datalist = action.payload;
                 state.errorMessage = null;
             })
             .addCase(index.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.errorMessage = action.payload || "login failed";
+            })
+            .addCase(deleteEvent.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteEvent.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(deleteEvent.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "delete failed";
+            })
+            .addCase(update.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(update.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(update.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "update failed";
+            })
+            .addCase(show.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(show.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(show.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "show failed";
             })
     }
 })
