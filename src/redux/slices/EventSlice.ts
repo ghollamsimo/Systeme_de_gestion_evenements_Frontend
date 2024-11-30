@@ -50,6 +50,19 @@ export const deleteEvent = createAsyncThunk(
     }
 );
 
+export const update = createAsyncThunk(
+    "event/update",
+    async ({ id, data }: { id: string; data: FormData }, { rejectWithValue }) => {
+        try {
+            const res = await EventService.update(id, data);
+            return res.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
+
 const eventSlice = createSlice({
     name: 'event',
     initialState,
@@ -113,6 +126,18 @@ const eventSlice = createSlice({
             .addCase(deleteEvent.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.errorMessage = action.payload || "delete failed";
+            })
+            .addCase(update.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(update.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.dataObj = action.payload;
+                state.errorMessage = null;
+            })
+            .addCase(update.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.errorMessage = action.payload || "update failed";
             })
     }
 })
