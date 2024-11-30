@@ -8,6 +8,10 @@ class EventService {
         this.http = Api();
     }
 
+    delete(id: string){
+        return this.http.delete(`/event/delete/${id}`)
+    }
+
     store(data: FormData): Promise<any> {
         return this.http.post('event/store', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -17,8 +21,6 @@ class EventService {
     stats(){
         return this.http.get(`/event/stats`)
     }
-
-
 
     index(){
         return this.http.get('/event/index')
