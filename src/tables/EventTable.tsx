@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { CreateEvent } from "../components/CreateEventComponent.tsx";
 import {DeleteEvent} from "../components/DeleteEventComponent.tsx";
 import {UpdateEvent} from "../components/UpdateEventComponent.tsx";
+import {ShowEvent} from "../components/ShowEventComponent.tsx";
 
 export const EventTable: React.FC = ({ events }) => {
     const [OpenPopup, setOpenPopup] = useState<boolean>(false);
     const [DeletePopup, setDeletePopup] = useState<boolean>(false);
     const [UpdatePopup, setUpdatePopup] = useState<boolean>(false);
+    const [ShowPopup, setShowPopup] = useState<boolean>(false);
     const [EventId, setEventId] = useState<boolean>(false);
 
 
@@ -20,6 +22,11 @@ export const EventTable: React.FC = ({ events }) => {
 
     const toggleUpdate = (eventId: string): void => {
         setUpdatePopup(!UpdatePopup);
+        setEventId(eventId);
+    };
+
+    const toggleShow = (eventId: string): void => {
+        setShowPopup(!ShowPopup);
         setEventId(eventId);
     };
     return (
@@ -67,7 +74,7 @@ export const EventTable: React.FC = ({ events }) => {
                                         >
                                             Delete
                                         </button>
-                                        <button className="bg-gray-200 text-gray-800 px-2 py-1 rounded-lg">
+                                        <button onClick={() => toggleShow(event._id)} className="bg-gray-200 text-gray-800 px-2 py-1 rounded-lg">
                                             View
                                         </button>
                                     </div>
@@ -87,6 +94,7 @@ export const EventTable: React.FC = ({ events }) => {
             {OpenPopup && <CreateEvent setIsOpen={setOpenPopup}/>}
             {DeletePopup && <DeleteEvent setOpenModal={setDeletePopup} eventId={EventId}/>}
             {UpdatePopup && <UpdateEvent setOpenModal={setUpdatePopup} eventId={EventId}/>}
+            {ShowPopup && <ShowEvent setOpenModal={setShowPopup} eventId={EventId}/>}
         </>
     );
 };
