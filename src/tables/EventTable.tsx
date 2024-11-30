@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { CreateEvent } from "../components/CreateEventComponent.tsx";
 import {DeleteEvent} from "../components/DeleteEventComponent.tsx";
+import {UpdateEvent} from "../components/UpdateEventComponent.tsx";
 
 export const EventTable: React.FC = ({ events }) => {
     const [OpenPopup, setOpenPopup] = useState<boolean>(false);
     const [DeletePopup, setDeletePopup] = useState<boolean>(false);
+    const [UpdatePopup, setUpdatePopup] = useState<boolean>(false);
     const [EventId, setEventId] = useState<boolean>(false);
 
 
@@ -13,6 +15,11 @@ export const EventTable: React.FC = ({ events }) => {
     };
     const toggleDelete = (eventId: string): void => {
         setDeletePopup(!DeletePopup);
+        setEventId(eventId);
+    };
+
+    const toggleUpdate = (eventId: string): void => {
+        setUpdatePopup(!UpdatePopup);
         setEventId(eventId);
     };
     return (
@@ -51,7 +58,7 @@ export const EventTable: React.FC = ({ events }) => {
                                 <td className="p-3 border-b">{event.description || "N/A"}</td>
                                 <td className="p-3 border-b">
                                     <div className="flex gap-7 items-center">
-                                        <button className="bg-purple-600 text-white px-2 py-1 rounded-lg">
+                                        <button onClick={() => toggleUpdate(event._id)} className="bg-purple-600 text-white px-2 py-1 rounded-lg">
                                             Edit
                                         </button>
                                         <button
@@ -79,6 +86,7 @@ export const EventTable: React.FC = ({ events }) => {
             </div>
             {OpenPopup && <CreateEvent setIsOpen={setOpenPopup}/>}
             {DeletePopup && <DeleteEvent setOpenModal={setDeletePopup} eventId={EventId}/>}
+            {UpdatePopup && <UpdateEvent setOpenModal={setUpdatePopup} eventId={EventId}/>}
         </>
     );
 };
