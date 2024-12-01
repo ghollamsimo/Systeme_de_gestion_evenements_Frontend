@@ -7,14 +7,18 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/Store.ts";
 import {index, stats} from "../redux/slices/EventSlice.ts";
+import {indexUsers} from "../redux/slices/AuthSlice.ts";
 
 export const DashboardPage: React.FC = () => {
     const dispatch = useDispatch();
     const stat = useSelector((state: RootState) => state.event.dataObj);
     const events = useSelector((state: RootState) => state.event.datalist)
+    const users = useSelector((state) => state.auth.datalist);
+    console.log('dkdkjod', users)
     useEffect(() =>{
         dispatch(stats())
         dispatch(index())
+        dispatch(indexUsers())
     }, [dispatch])
     return (
         <div className="min-h-screen">
@@ -22,7 +26,7 @@ export const DashboardPage: React.FC = () => {
              <NavbarDashboard/>
                 <div className="p-6">
                     <EventTable events={events}/>
-                    <UsersTable/>
+                    <UsersTable users={users}/>
                 </div>
             </main>
         </div>

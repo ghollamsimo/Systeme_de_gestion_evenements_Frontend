@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {jwtDecode} from "jwt-decode";
 import { update } from "../redux/slices/EventSlice.ts";
-import { index } from "../redux/slices/AuthSlice.ts";
+import { indexUsers } from "../redux/slices/AuthSlice.ts";
 
 export const UpdateEvent: React.FC = ({ eventId, setOpenModal }) => {
     const dispatch = useDispatch();
@@ -63,7 +63,7 @@ export const UpdateEvent: React.FC = ({ eventId, setOpenModal }) => {
     };
 
     useEffect(() => {
-        dispatch(index());
+        dispatch(indexUsers());
     }, [dispatch]);
 
     return (
