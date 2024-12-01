@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../redux/slices/EventSlice";
 import { jwtDecode } from "jwt-decode";
-import {index} from '../redux/slices/AuthSlice.ts'
+import {indexUsers} from '../redux/slices/AuthSlice.ts'
 export const CreateEvent: React.FC = ({ setIsOpen }) => {
     const dispatch = useDispatch();
     const token = localStorage.getItem("token");
@@ -56,7 +56,7 @@ export const CreateEvent: React.FC = ({ setIsOpen }) => {
 
 
     useEffect(() => {
-        dispatch(index())
+        dispatch(indexUsers())
     }, [dispatch]);
 
     return (

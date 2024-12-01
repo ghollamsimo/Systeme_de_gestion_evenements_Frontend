@@ -9,6 +9,7 @@ import ForgotPassword from "./ForgotpasswordAuth";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/Store.ts";
 import {login} from "../redux/slices/AuthSlice.ts";
+import {jwtDecode} from "jwt-decode";
 
 const Login: React.FC = () => {
     const navigate = useNavigate()
@@ -50,7 +51,7 @@ const Login: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent): void => {
+    const handleSubmit = async (e: React.FormEvent): void => {
         e.preventDefault();
 
         const newErrors = {
@@ -61,8 +62,22 @@ const Login: React.FC = () => {
 
         const hasErrors = Object.values(newErrors).some((error) => error);
         if (!hasErrors) {
-            dispatch(login({ email: formValidator.email, password: formValidator.password }));
-            navigate('/home')
+            const response = await dispatch(login({ email: formValidator.email, password: formValidator.password }));
+
+            const token = response.payload?.token || localStorage.getItem('token');
+
+            if (token) {
+                localStorage.setItem('token', token);
+                const decodedToken = jwtDecode(token);
+                const role = decodedToken?.role;
+                if (role === 'participant') {
+                    window.location.href = '/home'
+                } else {
+                    window.location.href = '/dashboard'
+                }
+            } else {
+                console.error("No token found.");
+            }
         }
     };
 
